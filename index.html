@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Threads 經營方案｜悅心創意</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+  background: #f5f5f3;
+  color: #1a1a1a;
+  padding: 28px 16px 60px;
+  font-size: 15px;
+}
+
+.container { max-width: 520px; margin: 0 auto; }
+
+header { text-align: center; margin-bottom: 28px; }
+
+.brand {
+  display: inline-block;
+  font-size: 12px;
+  color: #555;
+  font-weight: 600;
+  letter-spacing: 2px;
+  border-bottom: 1px solid #bbb;
+  padding-bottom: 3px;
+  margin-bottom: 10px;
+}
+
+header h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: #1a1a1a;
+  letter-spacing: 1px;
+  margin-bottom: 6px;
+}
+header h1 span { color: #555; }
+header p { font-size: 12px; color: #999; letter-spacing: 1px; }
+
+/* Plan tabs */
+.tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.tabs::-webkit-scrollbar { display: none; }
+
+.tab-btn {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 2px solid transparent;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+  color: #fff;
+}
+.tab-btn[data-plan="0"] { background: #1a1a1a; }
+.tab-btn[data-plan="1"] { background: #444; }
+.tab-btn[data-plan="2"] { background: #777; }
+.tab-btn.active { box-shadow: 0 0 0 3px rgba(0,0,0,0.18); transform: scale(1.04); }
+.tab-btn:not(.active) { opacity: 0.45; }
+
+/* Plan card */
+.plan-card { display: none; }
+.plan-card.active { display: block; }
+
+.plan-header {
+  border-radius: 14px 14px 0 0;
+  padding: 22px 20px 18px;
+  color: #fff;
+  text-align: center;
+}
+.plan-header h2 { font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+.plan-header .duration { font-size: 12px; opacity: 0.72; margin-bottom: 12px; letter-spacing: 0.5px; }
+.plan-header .monthly { font-size: 34px; font-weight: 800; line-height: 1; letter-spacing: -0.5px; }
+.plan-header .monthly-unit { font-size: 14px; font-weight: 400; opacity: 0.82; }
+.plan-header .total { font-size: 12px; opacity: 0.65; margin-top: 8px; }
+
+.bg0 { background: #1a1a1a; }
+.bg1 { background: #3a3a3a; }
+.bg2 { background: #666; }
+
+/* Sections */
+.sections { background: #fff; border-radius: 0 0 14px 14px; border: 1px solid #e0e0dc; border-top: none; overflow: hidden; }
+
+.section { border-bottom: 1px solid #ebebeb; }
+.section:last-child { border-bottom: none; }
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 13px 16px;
+  cursor: pointer;
+  user-select: none;
+  background: #fafafa;
+  -webkit-tap-highlight-color: transparent;
+}
+.section-header:active { background: #f0f0f0; }
+
+.section-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #333;
+  letter-spacing: 0.5px;
+}
+.section-arrow {
+  font-size: 12px;
+  color: #aaa;
+  transition: transform 0.2s;
+}
+.section-header.open .section-arrow { transform: rotate(180deg); }
+
+.section-body { display: none; }
+.section-body.open { display: block; }
+
+.service-row {
+  padding: 12px 16px;
+  border-top: 1px solid #ebebeb;
+}
+.service-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.service-name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #222;
+  flex: 1;
+}
+.service-val {
+  font-size: 13px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.val-yes { color: #1a1a1a; }
+.val-no  { color: #ccc; }
+.val-num { color: #444; }
+.val-upsell { color: #555; font-size: 12px; font-weight: 700; background: #f0f0ed; border-radius: 10px; padding: 2px 8px; }
+.upsell-row { background: #fafaf8; border-left: 2px solid #bbb; }
+.ig-link { display: inline-block; margin-top: 4px; font-size: 11px; color: #555; text-decoration: underline; text-underline-offset: 2px; }
+.service-desc {
+  font-size: 12px;
+  color: #999;
+  line-height: 1.6;
+}
+
+/* Footer */
+footer {
+  text-align: center;
+  margin-top: 28px;
+  font-size: 11.5px;
+  color: #bbb;
+  line-height: 2.2;
+}
+footer a { color: #555; text-decoration: none; }
+.note {
+  background: #fff;
+  border: 1px solid #d8d8d4;
+  border-left: 3px solid #1a1a1a;
+  border-radius: 0 10px 10px 0;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  font-size: 12px;
+  color: #555;
+  line-height: 1.9;
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+<header>
+  <div class="brand">悅心創意 Joyous Flair Creative</div>
+  <h1>Threads <span>經營方案</span></h1>
+  <p>專業社群經營 · 品牌成長加速 · 數據透明回報</p>
+</header>
+
+<div class="tabs">
+  <button class="tab-btn active" data-plan="0">基礎版</button>
+  <button class="tab-btn" data-plan="1">進階版</button>
+  <button class="tab-btn" data-plan="2">高級版</button>
+</div>
+
+<!-- PLAN 0 -->
+<div class="plan-card active" id="plan-0">
+  <div class="plan-header bg0">
+    <h2>基礎版</h2>
+    <div class="duration">合作期間：3 個月</div>
+    <div class="monthly">NT$ 38,000 <span class="monthly-unit">／月</span></div>
+    <div class="total">總價 NT$ 114,000（未稅）</div>
+  </div>
+  <div class="sections" id="sections-0"></div>
+</div>
+
+<!-- PLAN 1 -->
+<div class="plan-card" id="plan-1">
+  <div class="plan-header bg1">
+    <h2>進階版</h2>
+    <div class="duration">合作期間：6 個月</div>
+    <div class="monthly">NT$ 30,000 <span class="monthly-unit">／月</span></div>
+    <div class="total">總價 NT$ 180,000（未稅）</div>
+  </div>
+  <div class="sections" id="sections-1"></div>
+</div>
+
+<!-- PLAN 2 -->
+<div class="plan-card" id="plan-2">
+  <div class="plan-header bg2">
+    <h2>高級版</h2>
+    <div class="duration">合作期間：12 個月</div>
+    <div class="monthly">NT$ 28,000 <span class="monthly-unit">／月</span></div>
+    <div class="total">總價 NT$ 336,000（未稅）</div>
+  </div>
+  <div class="sections" id="sections-2"></div>
+</div>
+
+<div class="note">
+  付款方式：頭尾款制<br>
+  簽約後支付頭款 60%，服務期滿後支付尾款 40%<br>
+  以上報價均為未稅價，廣告投放預算另議
+</div>
+
+<footer>
+  <a href="https://joyousf.com" target="_blank">joyousf.com</a>
+  &nbsp;·&nbsp; 悅心創意 Joyous Flair Creative
+</footer>
+
+</div>
+
+<script>
+const sections = [
+  {
+    title: '帳號定位與建置',
+    items: [
+      { name: '品牌方向精準定位',   desc: '分析品牌核心價值，精準鎖定帳號內容方向與差異化定位',                                   vals: ['✓','✓','✓'] },
+      { name: '核心受眾深度分析',   desc: '深入研究目標受眾輪廓、行為習慣與內容偏好，作為策略基礎',                               vals: ['1 個','1 個','1 個'] },
+      { name: '帳號形象建置',       desc: '規劃帳號頭像、簡介與背景圖等視覺元素，符合平台風格與品牌調性',                         vals: ['✓','✓','✓'] },
+    ]
+  },
+  {
+    title: '內容策略與創作',
+    items: [
+      { name: '核心內容形式確認',   desc: '確定主力內容形式（文字貼文／圖文貼文／短影音），建立一致的風格語言',                   vals: ['✓','✓','✓'] },
+      { name: '月內容主題規劃',     desc: '制定每月內容主題方向與發布頻次，確保內容節奏穩定、主題聚焦',                           vals: ['✓','✓','✓'] },
+      { name: '優質貼文發布',       desc: '定期發布優質貼文，包含動態及靜態內容，維持帳號活躍度與吸引力',                         vals: ['每月 10 則','每月 11 則','每月 15 則'] },
+    ]
+  },
+  {
+    title: 'Threads 海巡互動與經營',
+    items: [
+      { name: '日常互動維護',       desc: '回覆留言、按讚優質內容，提升帳號活躍度與演算法好感度',                                 vals: ['✓','✓','✓'] },
+      { name: '留言區深度經營',     desc: '即時回應並引導留言討論，強化品牌黏著度與社群歸屬感',                                   vals: ['✓','✓','✓'] },
+      { name: '趨勢話題跟進',       desc: '結合 Threads 平台熱點話題創作貼文，借勢提升曝光與觸及',                                vals: ['✓','✓','✓'] },
+      { name: '互動活動企劃',       desc: '發起話題討論、投票等參與式活動，激活受眾互動感與參與率',                               vals: ['✓','✓','✓'] },
+    ]
+  },
+  {
+    title: 'IG 引流曝光策略',
+    items: [
+      { name: '優質內容引流',       desc: '轉發高互動內容吸引自然流量，以內容品質擴大 Threads 帳號觸及',                          vals: ['✓','✓','✓'] },
+      { name: '自有受眾建立',       desc: '透過貼文導流，將 Threads 粉絲引導至品牌自有受眾渠道（LINE、官網等）完成轉換',           vals: ['✕','✓','✓'] },
+      { name: '跨平台連動（加購）', desc: '透過 Instagram 帳號（故事、貼文）引流至 Threads，擴大跨平台曝光。可升級加購 IG 服務方案。', vals: ['可加購','可加購','可加購'], upsell: true },
+    ]
+  },
+  {
+    title: '數據監測與優化',
+    items: [
+      { name: '數據追蹤',           desc: '透過平台後台或第三方工具，追蹤曝光、互動（按讚／留言／轉發）等核心數據',               vals: ['✓','✓','✓'] },
+      { name: '月度數據報告',       desc: '每月輸出完整經營數據報告，分析成效並提出具體優化建議',                                 vals: ['✕','✓','✓'] },
+      { name: '策略調整優化',       desc: '依據數據回饋即時調整內容主題與互動策略，確保帳號持續成長',                             vals: ['✓','✓','✓'] },
+      { name: '季度策略回顧',       desc: '每季與客戶共同回顧整體經營方向，評估成效並調整下季規劃',                               vals: ['✕','✕','✓'] },
+    ]
+  },
+  {
+    title: '客戶服務與溝通',
+    items: [
+      { name: '留言／私訊管理',     desc: '即時回覆使用者諮詢與回饋，維護品牌在社群平台的良好形象',                               vals: ['✓','✓','✓'] },
+      { name: '問題申訴跟進',       desc: '妥善處理使用者建議或申訴，維護品牌口碑與用戶信任',                                     vals: ['✓','✓','✓'] },
+      { name: '專屬客服群組',       desc: '工作日 10:00–17:00 建立專屬客服群組，即時回應並解答日常問題',                          vals: ['✓','✓','✓'] },
+    ]
+  },
+];
+
+function valClass(v) {
+  if (v === '✓') return 'val-yes';
+  if (v === '✕') return 'val-no';
+  if (v === '可加購') return 'val-upsell';
+  return 'val-num';
+}
+
+for (let p = 0; p < 3; p++) {
+  const container = document.getElementById('sections-' + p);
+  sections.forEach(sec => {
+    const visibleItems = sec.items.filter(item => item.vals[p] !== '✕');
+    if (visibleItems.length === 0) return;
+
+    const div = document.createElement('div');
+    div.className = 'section';
+
+    const hdr = document.createElement('div');
+    hdr.className = 'section-header';
+    hdr.innerHTML = '<span class="section-title">' + sec.title + '</span><span class="section-arrow">▼</span>';
+
+    const body = document.createElement('div');
+    body.className = 'section-body';
+
+    sec.items.forEach(item => {
+      const v = item.vals[p];
+      if (v === '✕') return;
+      const row = document.createElement('div');
+      row.className = 'service-row' + (item.upsell ? ' upsell-row' : '');
+      const igLink = item.upsell ? ' <a href="https://joyousf.github.io/IG-Saleskit/" target="_blank" class="ig-link">查看 IG 方案 →</a>' : '';
+      row.innerHTML =
+        '<div class="service-top">' +
+          '<span class="service-name">' + item.name + '</span>' +
+          '<span class="service-val ' + valClass(v) + '">' + v + '</span>' +
+        '</div>' +
+        '<div class="service-desc">' + item.desc + igLink + '</div>';
+      body.appendChild(row);
+    });
+
+    hdr.addEventListener('click', function() {
+      const isOpen = body.classList.contains('open');
+      container.querySelectorAll('.section-body').forEach(b => b.classList.remove('open'));
+      container.querySelectorAll('.section-header').forEach(h => h.classList.remove('open'));
+      if (!isOpen) {
+        body.classList.add('open');
+        hdr.classList.add('open');
+      }
+    });
+
+    div.appendChild(hdr);
+    div.appendChild(body);
+    container.appendChild(div);
+  });
+}
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', function() {
+    const p = this.dataset.plan;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('active'));
+    this.classList.add('active');
+    document.getElementById('plan-' + p).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
